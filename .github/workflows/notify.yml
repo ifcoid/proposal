@@ -1,0 +1,43 @@
+name: Notifikasi Telegram
+
+on:
+  push:
+    branches:
+      - main
+  deployment_status:
+
+jobs:
+  notify-push:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kirim Notifikasi Push ke Telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            🚀 Push Baru ke Repository Proposal!
+
+            📝 Commit: ${{ github.event.head_commit.message }}
+            👤 Author: ${{ github.event.head_commit.author.name }}
+            🔗 Repository: https://github.com/${{ github.repository }}
+            📂 Branch: main
+
+  notify-deployment:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'github-pages'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kirim Notifikasi Deployment ke Telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ✅ Deployment Berhasil!
+
+            Proposal Frontend telah selesai di-deploy ke GitHub Pages.
+
+            🌐 URL: ${{ github.event.deployment_status.environment_url }}
+            📦 Repository: ${{ github.repository }}
+            📊 Status: Sukses
