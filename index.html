@@ -144,6 +144,70 @@
                     <input type="url" id="input-base-url" value="http://localhost:50607/api" placeholder="http://localhost:50607/api" required>
                     <small>Ubah ini jika backend berjalan di host/port lain.</small>
                 </div>
+
+                <hr>
+
+                <h3>Konfigurasi LLM API Key</h3>
+                <form id="form-llm-config">
+                    <div class="form-group">
+                        <label for="select-provider">Provider</label>
+                        <select id="select-provider">
+                            <option value="gemini">Gemini (Google)</option>
+                            <option value="groq">Groq</option>
+                            <option value="zhipu">Zhipu (GLM)</option>
+                            <option value="claude">Claude (Anthropic)</option>
+                            <option value="openrouter">OpenRouter</option>
+                            <option value="nvidia">NVIDIA NIM</option>
+                            <option value="cohere">Cohere (v2)</option>
+                            <option value="xiaomi">Xiaomi MiMo API</option>
+                            <option value="rprompt1">LLMy 1 (Proxy LLM)</option>
+                            <option value="rprompt2">LLMy 2 (Proxy LLM)</option>
+                            <option value="rprompt3">LLMy 3 (Proxy LLM)</option>
+                            <option value="rprompt4">LLMy 4 (Proxy LLM)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-api-key">API Key</label>
+                        <input type="password" id="input-api-key" placeholder="Masukkan API Key...">
+                    </div>
+                    <div class="form-group hidden" id="group-base-url">
+                        <label>Base URL (Opsional)</label>
+                        <input type="text" id="llm-base-url" placeholder="https://api.openai.com/v1">
+                    </div>
+
+                    <div class="form-group" style="display: flex; gap: 10px; align-items: flex-end;">
+                        <div style="flex: 1;">
+                            <label>Default Model</label>
+                            <select id="llm-model" class="input-modern" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);">
+                                <option value="">Masukkan API Key & Muat Model...</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btn-fetch-models" class="btn btn-secondary" style="height: 42px;">🔄 Muat Model</button>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Simpan LLM Config</button>
+                </form>
+
+                <hr>
+
+                <h3>Model Routing (Peran → Provider)</h3>
+                <small>Tentukan provider untuk tiap peran agen + fallback-nya. Provider harus sudah dikonfigurasi API Key-nya di atas.</small>
+                <form id="form-llm-roles" style="margin-top: 10px;">
+                    <div class="form-group"><label>Brain (Main LLM untuk semua agen)</label><select id="role-brain"></select></div>
+                    <div class="form-group"><label>Brain Fallback</label><select id="role-brain_fallback"></select></div>
+                    <button type="submit" class="btn btn-primary">Simpan Model Routing</button>
+                </form>
+
+                <hr>
+
+                <h3>Embed Config (Embedding Server)</h3>
+                <small>Konfigurasi endpoint embedding untuk vectorisasi dokumen.</small>
+                <form id="form-embed-config" style="margin-top: 10px;">
+                    <div class="form-group"><label>Endpoint</label><input type="text" id="embed-cfg-endpoint" placeholder="https://your-embed-server/v1"></div>
+                    <div class="form-group"><label>API Key</label><input type="password" id="embed-cfg-key" placeholder="API Key"></div>
+                    <div class="form-group"><label>Model</label><input type="text" id="embed-cfg-model" placeholder="BAAI/bge-m3"></div>
+                    <button type="submit" class="btn btn-primary">Simpan Embed Config</button>
+                </form>
             </div>
         </div>
     </div>
