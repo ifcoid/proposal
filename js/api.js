@@ -103,5 +103,32 @@ export const API = {
     // References
     getRefs: (id) => apiFetch(`/proposal/sessions/${id}/refs`),
 
-    getMissingPdfs: (id) => apiFetch(`/proposal/sessions/${id}/refs/missing-pdfs`)
+    getMissingPdfs: (id) => apiFetch(`/proposal/sessions/${id}/refs/missing-pdfs`),
+
+    // LLM Config API
+    updateLLMConfig: (provider, apiKey, model, baseUrl) => apiFetch('/llm/config', {
+        method: 'PUT',
+        body: JSON.stringify({ provider, api_key: apiKey, model, base_url: baseUrl })
+    }),
+
+    fetchModels: (provider, apiKey, baseUrl) => apiFetch(`/llm/providers/${provider}/models`, {
+        method: 'POST',
+        body: JSON.stringify({ api_key: apiKey, base_url: baseUrl })
+    }),
+
+    // LLM Roles (Model Routing)
+    getRoles: () => apiFetch('/llm/roles'),
+
+    updateRoles: (payload) => apiFetch('/llm/roles', {
+        method: 'PUT',
+        body: JSON.stringify(payload)
+    }),
+
+    // Embed Config
+    getEmbedConfig: () => apiFetch('/embed/config'),
+
+    updateEmbedConfig: (payload) => apiFetch('/embed/config', {
+        method: 'PUT',
+        body: JSON.stringify(payload)
+    })
 };
