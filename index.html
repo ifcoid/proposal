@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Agent - Pipeline Orchestrator</title>
+    <!-- Modern Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="background-mesh"></div>
+
+    <header class="glass-panel main-header">
+        <h1>Proposal <span>Agent</span></h1>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button id="btn-refs" class="btn btn-icon hidden" title="Daftar Referensi">
+                📚 Referensi
+            </button>
+            <button id="btn-settings" class="btn btn-icon" title="Pengaturan API">
+                ⚙️ Pengaturan
+            </button>
+            <button id="btn-logout" class="btn btn-icon hidden" title="Keluar dari Akun" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+                🚪 Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Auth Section -->
+        <section id="section-login" class="glass-panel card hidden">
+            <h2 id="auth-title">Masuk ke Sistem</h2>
+            <form id="form-auth">
+                <div class="form-group">
+                    <label for="input-username">Username</label>
+                    <input type="text" id="input-username" placeholder="Masukkan username..." required>
+                </div>
+                <div class="form-group">
+                    <label for="input-password">Password</label>
+                    <input type="password" id="input-password" placeholder="Masukkan password..." required>
+                </div>
+                <div class="form-group hidden" id="group-invite-code">
+                    <label for="input-invite-code">Kode Undangan (Khusus Register)</label>
+                    <input type="password" id="input-invite-code" placeholder="Kosongkan jika tidak ada">
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <a href="#" id="link-toggle-auth" style="color: #60a5fa; text-decoration: none; font-size: 0.9em;">Belum punya akun? Daftar di sini</a>
+                    <button type="submit" id="btn-submit-auth" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Dashboard Section: Create Session -->
+        <section id="section-new-session" class="glass-panel card">
+            <h2>Mulai Sesi Proposal Baru</h2>
+            <form id="form-new-session">
+                <div class="form-group">
+                    <label for="input-session-id">ID Sesi (tanpa spasi)</label>
+                    <input type="text" id="input-session-id" placeholder="misal: proposal_ai_2026" required>
+                </div>
+                <div class="form-group">
+                    <label for="input-topic">Topik Riset</label>
+                    <textarea id="input-topic" rows="3" placeholder="misal: Penggunaan Active Learning pada klasifikasi data EEG untuk Brain-Computer Interface..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Mulai Pipeline Proposal</button>
+            </form>
+        </section>
+
+        <!-- Tracker Section: Monitor Pipeline -->
+        <section id="section-tracker" class="glass-panel card hidden">
+            <div class="tracker-header">
+                <h2>Pipeline: <span id="display-session-id" class="text-highlight">...</span></h2>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-refresh" class="btn btn-icon">🔄 Refresh</button>
+                    <button id="btn-exit-session" class="btn btn-icon" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Keluar Sesi</button>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div id="progress-bar-container" class="progress-bar-container">
+                <div class="progress-phases">
+                    <div class="phase-item" data-phase="P0">P0</div>
+                    <div class="phase-item" data-phase="P1">P1</div>
+                    <div class="phase-item" data-phase="P2">P2</div>
+                    <div class="phase-item" data-phase="P3">P3</div>
+                    <div class="phase-item" data-phase="P4">P4</div>
+                    <div class="phase-item" data-phase="P5">P5</div>
+                    <div class="phase-item" data-phase="P6">P6</div>
+                    <div class="phase-item" data-phase="P7">P7</div>
+                </div>
+                <div class="progress-track">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="status-indicator">
+                <div class="spinner hidden" id="status-spinner"></div>
+                <h3 id="display-status">Menunggu...</h3>
+                <span id="status-badge" class="status-badge"></span>
+            </div>
+
+            <!-- Interactive Area -->
+            <div id="interactive-area" class="interactive-area">
+                <!-- Content injected dynamically based on status -->
+            </div>
+        </section>
+
+        <!-- Reference List Section -->
+        <section id="section-refs" class="glass-panel card hidden">
+            <div class="tracker-header">
+                <h2>Daftar Referensi</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-back-refs" class="btn btn-icon" style="background: rgba(156, 163, 175, 0.2); color: #9ca3af; border-color: rgba(156, 163, 175, 0.3);">Kembali</button>
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem; display: flex; gap: 10px;">
+                <button class="btn btn-secondary btn-filter active" data-filter="all">Semua</button>
+                <button class="btn btn-secondary btn-filter" data-filter="missing">Missing PDF</button>
+                <button class="btn btn-secondary btn-filter" data-filter="embedded">Embedded</button>
+            </div>
+            <div id="refs-table-container">
+                <!-- Table injected here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="modal-settings" class="modal-overlay hidden">
+        <div class="glass-panel modal-content">
+            <div class="modal-header">
+                <h2>Pengaturan Sistem</h2>
+                <button id="btn-close-settings" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Koneksi Backend</h3>
+                <div class="form-group">
+                    <label for="input-base-url">Base URL API Endpoint</label>
+                    <input type="url" id="input-base-url" value="http://localhost:50607/api" placeholder="http://localhost:50607/api" required>
+                    <small>Ubah ini jika backend berjalan di host/port lain.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Main Module Entry -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
